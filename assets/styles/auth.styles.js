@@ -48,6 +48,7 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
   },
   footerContainer: {
+    marginTop: 25,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -107,5 +108,10 @@ export const styles = StyleSheet.create({
     marginLeft: 8,
     flex: 1,
     fontSize: 14,
+  },
+  ForgotPasswordView: {
+    marginTop: -10,
+    alignItems: "flex-end",
+    width: "100%",
   },
 });

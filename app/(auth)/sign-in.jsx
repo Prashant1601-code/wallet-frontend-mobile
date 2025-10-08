@@ -4,7 +4,6 @@ import { Text, TextInput, TouchableOpacity, View, Image } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/colors";
-
 import { styles } from "../../assets/styles/auth.styles";
 import { useState } from "react";
 
@@ -16,25 +15,25 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Handle the submission of the sign-in form
+  // 🟢 NEW: Forgot password mode and related state
+  const [isForgotMode, setIsForgotMode] = useState(false);
+  const [code, setCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  // Handle Sign In
   const onSignInPress = async () => {
     if (!isLoaded) return;
 
-    // Start the sign-in process using the email and password provided
     try {
       const signInAttempt = await signIn.create({
         identifier: emailAddress,
         password,
       });
 
-      // If sign-in process is complete, set the created session as active
-      // and redirect the user
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
         router.replace("/");
       } else {
-        // If the status isn't complete, check why. User might need to
-        // complete further steps.
         console.error(JSON.stringify(signInAttempt, null, 2));
       }
     } catch (err) {
@@ -43,7 +42,44 @@ export default function Page() {
       } else {
         setError("An error occurred. Please try again.");
       }
-      // console.error(JSON.stringify(err, null, 2));
+    }
+  };
+
+  // 🟢 NEW: Request password reset (step 1)
+  const onForgotPassword = async () => {
+    if (!emailAddress) {
+      setError("Please enter your email to reset password."); // 🟢 New error
+      return;
+    }
+
+    try {
+      await signIn.create({
+        strategy: "reset_password_email_code",
+        identifier: emailAddress,
+      });
+      alert("Password reset code sent to your email!");
+      setIsForgotMode(true); // 🟢 Switch to reset screen
+    } catch (err) {
+      setError(err.errors?.[0]?.message || "Unable to send reset code");
+    }
+  };
+
+  // 🟢 NEW: Verify code + reset password (step 2)
+  const onResetPassword = async () => {
+    try {
+      const result = await signIn.attemptFirstFactor({
+        strategy: "reset_password_email_code",
+        code,
+        password: newPassword,
+      });
+
+      await setActive({ session: result.createdSessionId });
+      alert("Password reset successful!");
+      setIsForgotMode(false);
+      setCode("");
+      setNewPassword("");
+    } catch (err) {
+      setError(err.errors?.[0]?.message || "Invalid code or password");
     }
   };
 
@@ -60,7 +96,11 @@ export default function Page() {
           source={require("../../assets/images/sign_in.png")}
           style={styles.illustration}
         />
-        <Text style={styles.title}>Sign in</Text>
+        {/* 🟢 Title changes dynamically */}
+        <Text style={styles.title}>
+          {isForgotMode ? "Reset Password" : "Sign in"}
+        </Text>
+
         {error ? (
           <View style={styles.errorBox}>
             <Ionicons name="alert-circle" size={20} color={COLORS.expense} />
@@ -70,33 +110,95 @@ export default function Page() {
             </TouchableOpacity>
           </View>
         ) : null}
-        <TextInput
-          style={[styles.input, error && styles.errorInput]}
-          autoCapitalize="none"
-          value={emailAddress}
-          placeholder="Enter email"
-          placeholderTextColor="#9A8478"
-          onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-        />
-        <TextInput
-          style={[styles.input, error && styles.errorInput]}
-          value={password}
-          placeholder="Enter password"
-          placeholderTextColor="#9A8478"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-        />
-        <TouchableOpacity onPress={onSignInPress} style={styles.button}>
-          <Text style={styles.buttonText}>Sign In</Text>
-        </TouchableOpacity>
-        <View style={styles.footerContainer}>
-          <Text style={styles.footerText}>Don't have an account?</Text>
-          <Link href="/sign-up" asChild>
-            <TouchableOpacity>
-              <Text style={styles.linkText}>Sign up</Text>
+
+        {/* 🟢 Normal Sign In */}
+        {!isForgotMode ? (
+          <>
+            <TextInput
+              style={[styles.input, error && styles.errorInput]}
+              autoCapitalize="none"
+              value={emailAddress}
+              placeholder="Enter email"
+              placeholderTextColor="#9A8478"
+              onChangeText={(email) => {
+                setEmailAddress(email);
+                if (error) setError(""); // 🟢 Auto clear error while typing
+              }}
+            />
+            <TextInput
+              style={[styles.input, error && styles.errorInput]}
+              value={password}
+              placeholder="Enter password"
+              placeholderTextColor="#9A8478"
+              secureTextEntry={true}
+              onChangeText={(password) => setPassword(password)}
+            />
+            <TouchableOpacity onPress={onSignInPress} style={styles.button}>
+              <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
-          </Link>
-        </View>
+
+            {/* 🟢 Forgot Password button */}
+            <TouchableOpacity
+              style={styles.ForgotPasswordView}
+              onPress={onForgotPassword}
+            >
+              <Text style={[styles.linkText, { marginTop: 15 }]}>
+                Forgot Password?
+              </Text>
+            </TouchableOpacity>
+
+            <View style={styles.footerContainer}>
+              <Text style={styles.footerText}>Don't have an account?</Text>
+              <Link href="/sign-up" asChild>
+                <TouchableOpacity>
+                  <Text style={styles.linkText}>Sign up</Text>
+                </TouchableOpacity>
+              </Link>
+            </View>
+          </>
+        ) : (
+          /* 🟢 Forgot Password Mode UI */
+          <>
+            <TextInput
+              style={[styles.input, error && styles.errorInput]}
+              autoCapitalize="none"
+              value={emailAddress}
+              editable={false}
+              placeholder="Email"
+              placeholderTextColor="#9A8478"
+            />
+            <TextInput
+              style={[styles.input, error && styles.errorInput]}
+              value={code}
+              placeholder="Enter verification code"
+              placeholderTextColor="#9A8478"
+              onChangeText={(val) => {
+                setCode(val);
+                if (error) setError(""); // 🟢 Auto clear error
+              }}
+            />
+            <TextInput
+              style={[styles.input, error && styles.errorInput]}
+              value={newPassword}
+              placeholder="Enter new password"
+              placeholderTextColor="#9A8478"
+              secureTextEntry={true}
+              onChangeText={(val) => {
+                setNewPassword(val);
+                if (error) setError(""); // 🟢 Auto clear error
+              }}
+            />
+            <TouchableOpacity onPress={onResetPassword} style={styles.button}>
+              <Text style={styles.buttonText}>Reset Password</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setIsForgotMode(false)}>
+              <Text style={[styles.linkText, { marginTop: 15 }]}>
+                Back to Sign In
+              </Text>
+            </TouchableOpacity>
+          </>
+        )}
       </View>
     </KeyboardAwareScrollView>
   );

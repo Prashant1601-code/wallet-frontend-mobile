@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/colors";
 import { Image } from "expo-image";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
@@ -16,28 +17,24 @@ export default function SignUpScreen() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+
   // Handle submission of sign-up form
   const onSignUpPress = async () => {
     if (!isLoaded) return;
 
-    // Start sign-up process using email and password provided
     try {
       await signUp.create({
         emailAddress,
         password,
       });
 
-      // Send user an email with verification code
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-
-      // Set 'pendingVerification' to true to display second form
-      // and capture OTP code
       setPendingVerification(true);
     } catch (err) {
       if (err.errors?.[0]?.code === "form_identifier_exists") {
-        setError("That email address is already in use. please try another.");
+        setError("That email address is already in use. Please try another.");
       } else {
-        setError("An error occurred. Please try again.");
+        setError("Enter a valid email and password (min. 8 characters).");
       }
     }
   };
@@ -47,24 +44,17 @@ export default function SignUpScreen() {
     if (!isLoaded) return;
 
     try {
-      // Use the code the user provided to attempt verification
       const signUpAttempt = await signUp.attemptEmailAddressVerification({
         code,
       });
 
-      // If verification was completed, set the session to active
-      // and redirect the user
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
         router.replace("/");
       } else {
-        // If the status is not complete, check why. User may need to
-        // complete further steps.
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
       console.error(JSON.stringify(err, null, 2));
     }
   };
@@ -87,9 +77,12 @@ export default function SignUpScreen() {
         <TextInput
           style={[styles.verificationInput, error && styles.errorInput]}
           value={code}
-          placeholder="Enter your verification code"
+          placeholder="Enter the OTP we emailed you"
           placeholderTextColor="#9A8478"
-          onChangeText={(code) => setCode(code)}
+          onChangeText={(code) => {
+            setCode(code);
+            if (error) setError(""); // 🟢 NEW — auto clear error on typing
+          }}
         />
         <TouchableOpacity onPress={onVerifyPress} style={styles.button}>
           <Text style={styles.buttonText}>Verify</Text>
@@ -128,7 +121,10 @@ export default function SignUpScreen() {
           value={emailAddress}
           placeholderTextColor="#9A8478"
           placeholder="Enter email"
-          onChangeText={(email) => setEmailAddress(email)}
+          onChangeText={(email) => {
+            setEmailAddress(email);
+            if (error) setError(""); // 🟢 NEW — auto clear error on typing
+          }}
         />
         <TextInput
           style={[styles.input, error && styles.errorInput]}
@@ -136,7 +132,10 @@ export default function SignUpScreen() {
           placeholder="Enter password"
           placeholderTextColor="#9A8478"
           secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
+          onChangeText={(password) => {
+            setPassword(password);
+            if (error) setError(""); // 🟢 NEW — auto clear error on typing
+          }}
         />
         <TouchableOpacity style={styles.button} onPress={onSignUpPress}>
           <Text style={styles.buttonText}>Sign Up</Text>
