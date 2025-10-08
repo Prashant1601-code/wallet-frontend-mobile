@@ -261,4 +261,48 @@ export const styles = StyleSheet.create({
   transactionsListContent: {
     paddingBottom: 20,
   },
+
+  // filter css
+  filterContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: COLORS.cardBackground || "#f8f9fa",
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    marginBottom: 15,
+  },
+  filterButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: filterDate ? COLORS.primary : "#eee",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    flex: 1,
+    marginRight: 10,
+  },
+  filterButtonText: {
+    marginLeft: 8,
+    color: filterDate ? "#fff" : "#444",
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  filterButtonDate: {
+    backgroundColor: "#ffeaea",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+  },
+  filterButtonTextDate: {
+    color: COLORS.expense,
+    fontWeight: "600",
+    fontSize: 14,
+  },
 });

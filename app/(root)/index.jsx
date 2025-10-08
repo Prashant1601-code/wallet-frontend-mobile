@@ -11,14 +11,16 @@ import {
 } from "react-native";
 import { SignOutButton } from "@/components/SignOutButton";
 import { useTransaction } from "../../hooks/useTransaction";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PageLoader from "../../components/PageLoader";
 import { styles } from "../../assets/styles/homes.styles";
 import Ionicon from "@expo/vector-icons/Ionicons";
 import BalanceCard from "../../components/BalanceCard";
 import { TransactionItem } from "../../components/TransactionItem";
 import NoTransactionsFound from "../../components/NoTransactionsFound";
-import { useState } from "react";
+
+// 🟢 NEW — import date picker
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 export default function Page() {
   const { user } = useUser();
@@ -27,9 +29,29 @@ export default function Page() {
 
   const { transactions, summary, isLoading, loadData, deleteTransaction } =
     useTransaction(user.id);
+
+  // 🟢 NEW — filter states
+  const [filterDate, setFilterDate] = useState(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // 🟢 NEW — when transactions or filter date changes, apply filter
+  useEffect(() => {
+    if (!filterDate) {
+      setFilteredTransactions(transactions);
+      return;
+    }
+    const selectedDay = new Date(filterDate).toDateString();
+    const filtered = transactions.filter((t) => {
+      const tDate = new Date(t.created_at).toDateString();
+      return tDate === selectedDay;
+    });
+    setFilteredTransactions(filtered);
+  }, [filterDate, transactions]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -52,8 +74,6 @@ export default function Page() {
     );
   };
 
-  // Show a loading indicator while data is being fetched
-
   if (isLoading && !refreshing) {
     return <PageLoader />;
   }
@@ -63,20 +83,18 @@ export default function Page() {
       <View style={styles.content}>
         {/* Header */}
         <View style={styles.header}>
-          {/* left */}
           <View style={styles.headerLeft}>
             <Image
               source={require("../../assets/images/logo1.png")}
               style={styles.headerLogo}
               resizeMode="contain"
-            ></Image>
+            />
             <View style={styles.welcomeContainer}>
               <Text style={styles.welcomeText}>Welcome,</Text>
               <Text style={styles.usernameText}>
                 {user?.emailAddresses[0]?.emailAddress.split("@")[0]}
               </Text>
             </View>
-            {/* right */}
             <View style={styles.headerRight}>
               <TouchableOpacity
                 style={styles.addButton}
@@ -89,18 +107,55 @@ export default function Page() {
             </View>
           </View>
         </View>
+
         <BalanceCard summary={summary} />
 
         <View style={styles.transactionsHeaderContaine}>
-          <Text style={styles.sectionTitle}>Recent Transaction</Text>
+          <Text style={styles.sectionTitle}>Recent Transactions</Text>
         </View>
+
+        {/* 🟢 NEW — Date Filter UI */}
+        <View style={styles.filterContainer}>
+          <TouchableOpacity
+            style={styles.filterButton}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Ionicon name="calendar-outline" size={18} color="#444" />
+            <Text style={styles.filterButtonText}>
+              {filterDate
+                ? new Date(filterDate).toLocaleDateString()
+                : "Select Date"}
+            </Text>
+          </TouchableOpacity>
+
+          {filterDate && (
+            <TouchableOpacity
+              style={styles.filterButtonDate}
+              onPress={() => setFilterDate(null)}
+            >
+              <Text style={styles.filterButtonTextDate}>Reset</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={filterDate ? new Date(filterDate) : new Date()}
+            mode="date"
+            display="default"
+            onChange={(event, date) => {
+              setShowDatePicker(false);
+              if (date) setFilterDate(date);
+            }}
+          />
+        )}
       </View>
-      {/* flatList is performant way to render long lists in react native */}
-      {/* it renders item lazily - only those on the screen. */}
+
+      {/* 🟢 UPDATED — use filteredTransactions instead of transactions */}
       <FlatList
         style={styles.transactionsList}
         contentContainerStyle={styles.transactionsListContent}
-        data={transactions}
+        data={filteredTransactions}
         renderItem={({ item }) => (
           <TransactionItem item={item} onDelete={handleDelete} />
         )}
