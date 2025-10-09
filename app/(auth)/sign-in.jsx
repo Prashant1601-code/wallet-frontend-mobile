@@ -20,7 +20,7 @@ export default function Page() {
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  // Handle Sign In
+  // 🟢 Handle Sign In
   const onSignInPress = async () => {
     if (!isLoaded) return;
 
@@ -40,7 +40,7 @@ export default function Page() {
       if (err.errors?.[0]?.code === "form_password_incorrect") {
         setError("Incorrect password. Please try again.");
       } else {
-        setError("An error occurred. Please try again.");
+        setError("Enter Email and Password, please."); // 🟢 Updated error message
       }
     }
   };

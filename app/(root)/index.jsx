@@ -110,18 +110,18 @@ export default function Page() {
 
         <BalanceCard summary={summary} />
 
-        <View style={styles.transactionsHeaderContaine}>
+        <View style={styles.transactionsHeaderContainer}>
           <Text style={styles.sectionTitle}>Recent Transactions</Text>
         </View>
 
         {/* 🟢 NEW — Date Filter UI */}
-        <View style={styles.filterContainer}>
+        <View style={styles.transactionsHeaderContainer}>
           <TouchableOpacity
-            style={styles.filterButton}
+            style={styles.transactionsHeaderContainerButton}
             onPress={() => setShowDatePicker(true)}
           >
             <Ionicon name="calendar-outline" size={18} color="#444" />
-            <Text style={styles.filterButtonText}>
+            <Text style={{ marginLeft: 6, color: "#444" }}>
               {filterDate
                 ? new Date(filterDate).toLocaleDateString()
                 : "Select Date"}
@@ -129,11 +129,8 @@ export default function Page() {
           </TouchableOpacity>
 
           {filterDate && (
-            <TouchableOpacity
-              style={styles.filterButtonDate}
-              onPress={() => setFilterDate(null)}
-            >
-              <Text style={styles.filterButtonTextDate}>Reset</Text>
+            <TouchableOpacity onPress={() => setFilterDate(null)}>
+              <Text style={{ color: "#e74c3c", fontWeight: "600" }}>Reset</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -143,6 +140,7 @@ export default function Page() {
             value={filterDate ? new Date(filterDate) : new Date()}
             mode="date"
             display="default"
+            maximumDate={new Date()} // 🟢 NEW: Prevent selecting future dates
             onChange={(event, date) => {
               setShowDatePicker(false);
               if (date) setFilterDate(date);

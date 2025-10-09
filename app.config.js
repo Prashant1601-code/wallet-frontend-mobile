@@ -6,9 +6,16 @@ export default {
     slug: "mobile",
     icon: "./assets/images/apk_icon.png",
 
+    splash: {
+      image: "./assets/images/apk_icon.png",
+      resizeMode: "contain",
+      backgroundColor: "#FFFFFF",
+    },
+
     android: {
       package: "com.prashant1601.mobile",
     },
+
     extra: {
       clerkPublishableKey: process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY,
       apiUrl: process.env.EXPO_PUBLIC_API_URL,
