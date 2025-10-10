@@ -124,7 +124,7 @@ const CreateScreen = () => {
                 isExpense && styles.typeButtonTextActive,
               ]}
             >
-              Expenses
+              Expense
             </Text>
           </TouchableOpacity>
           {/* INCOME SELECTOR*/}
