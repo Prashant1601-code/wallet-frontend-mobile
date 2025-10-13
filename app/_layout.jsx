@@ -29,7 +29,7 @@ export default function RootLayout() {
       <SafeScreen>
         <Slot />
       </SafeScreen>
-      <StatusBar style="dark" />
+      <StatusBar style="light" translucent backgroundColor="transparent" />
     </ClerkProvider>
   );
 }

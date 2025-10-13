@@ -88,7 +88,7 @@ export const styles = StyleSheet.create({
   currencySymbol: {
     fontSize: 32,
     fontWeight: "bold",
-    color: COLORS.text,
+    color: COLORS.textLight,
     marginRight: 8,
   },
   amountInput: {
@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 4,
     marginBottom: 20,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.inputContainer,
   },
   inputIcon: {
     marginHorizontal: 12,
@@ -114,7 +114,8 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     fontSize: 16,
-    color: COLORS.text,
+    fontWeight: "700",
+    color: COLORS.black,
   },
   sectionTitle: {
     fontSize: 18,
@@ -138,7 +139,7 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: COLORS.border,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.black,
   },
   categoryButtonActive: {
     backgroundColor: COLORS.primary,

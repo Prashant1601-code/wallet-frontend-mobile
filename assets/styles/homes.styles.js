@@ -156,7 +156,7 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#0E0B26",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -264,7 +264,7 @@ export const styles = StyleSheet.create({
   transactionsHeaderContainerButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#eee",
+    backgroundColor: "#b3b5faff",
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,

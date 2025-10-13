@@ -40,7 +40,7 @@ export default function Page() {
       if (err.errors?.[0]?.code === "form_password_incorrect") {
         setError("Incorrect password. Please try again.");
       } else {
-        setError("Enter Email and Password, please."); // 🟢 Updated error message
+        setError("Enter Email and Password , please."); // 🟢 Updated error message
       }
     }
   };
@@ -119,7 +119,7 @@ export default function Page() {
               autoCapitalize="none"
               value={emailAddress}
               placeholder="Enter email"
-              placeholderTextColor="#9A8478"
+              placeholderTextColor="#807e7dff"
               onChangeText={(email) => {
                 setEmailAddress(email);
                 if (error) setError(""); // 🟢 Auto clear error while typing
@@ -129,7 +129,7 @@ export default function Page() {
               style={[styles.input, error && styles.errorInput]}
               value={password}
               placeholder="Enter password"
-              placeholderTextColor="#9A8478"
+              placeholderTextColor="#807e7dff"
               secureTextEntry={true}
               onChangeText={(password) => setPassword(password)}
             />
@@ -165,13 +165,13 @@ export default function Page() {
               value={emailAddress}
               editable={false}
               placeholder="Email"
-              placeholderTextColor="#9A8478"
+              placeholderTextColor="#807e7dff"
             />
             <TextInput
               style={[styles.input, error && styles.errorInput]}
               value={code}
               placeholder="Enter verification code"
-              placeholderTextColor="#9A8478"
+              placeholderTextColor="#807e7dff"
               onChangeText={(val) => {
                 setCode(val);
                 if (error) setError(""); // 🟢 Auto clear error
@@ -181,7 +181,7 @@ export default function Page() {
               style={[styles.input, error && styles.errorInput]}
               value={newPassword}
               placeholder="Enter new password"
-              placeholderTextColor="#9A8478"
+              placeholderTextColor="#807e7dff"
               secureTextEntry={true}
               onChangeText={(val) => {
                 setNewPassword(val);

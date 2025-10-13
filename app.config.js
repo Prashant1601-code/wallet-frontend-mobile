@@ -20,8 +20,9 @@ export default {
       clerkPublishableKey: process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY,
       apiUrl: process.env.EXPO_PUBLIC_API_URL,
       eas: {
-        projectId: "b7da57b6-c23e-4e2a-89a9-fd6c3c6219a1",
+        projectId: "d74cbbe2-747c-4459-ac7d-1e87ca7deaa1",
       },
     },
   },
 };
+//  projectId: "b7da57b6-c23e-4e2a-89a9-fd6c3c6219a1",

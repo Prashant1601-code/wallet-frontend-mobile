@@ -34,7 +34,9 @@ export default function SignUpScreen() {
       if (err.errors?.[0]?.code === "form_identifier_exists") {
         setError("That email address is already in use. Please try another.");
       } else {
-        setError("Enter a valid email and password (min. 8 characters).");
+        setError(
+          "Enter a valid email and password (min. 8 characters must include at least one uppercase letter (A–Z))."
+        );
       }
     }
   };
@@ -78,13 +80,13 @@ export default function SignUpScreen() {
           style={[styles.verificationInput, error && styles.errorInput]}
           value={code}
           placeholder="Enter the OTP we emailed you"
-          placeholderTextColor="#9A8478"
+          placeholderTextColor="#807e7dff"
           onChangeText={(code) => {
             setCode(code);
             if (error) setError(""); // 🟢 NEW — auto clear error on typing
           }}
         />
-        <TouchableOpacity onPress={onVerifyPress} style={styles.button}>
+        <TouchableOpacity onPress={onVerifyPress} style={styles.verifyButton}>
           <Text style={styles.buttonText}>Verify</Text>
         </TouchableOpacity>
       </View>
@@ -119,7 +121,7 @@ export default function SignUpScreen() {
           style={[styles.input, error && styles.errorInput]}
           autoCapitalize="none"
           value={emailAddress}
-          placeholderTextColor="#9A8478"
+          placeholderTextColor="#807e7dff"
           placeholder="Enter email"
           onChangeText={(email) => {
             setEmailAddress(email);
@@ -130,7 +132,7 @@ export default function SignUpScreen() {
           style={[styles.input, error && styles.errorInput]}
           value={password}
           placeholder="Enter password"
-          placeholderTextColor="#9A8478"
+          placeholderTextColor="#807e7dff"
           secureTextEntry={true}
           onChangeText={(password) => {
             setPassword(password);

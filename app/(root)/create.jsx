@@ -166,13 +166,13 @@ const CreateScreen = () => {
           <Ionicons
             name="create-outline"
             size={22}
-            color={COLORS.textLight}
+            color={COLORS.dark}
             style={styles.inputIcon}
           />
           <TextInput
             style={styles.input}
             placeholder="Transaction Title"
-            placeholderTextColor={COLORS.textLight}
+            placeholderTextColor={COLORS.dark}
             value={title}
             onChangeText={setTitle}
           />
@@ -180,7 +180,7 @@ const CreateScreen = () => {
 
         {/* TITLE */}
         <Text style={styles.sectionTitle}>
-          <Ionicons name="pricetag-outline" size={16} color={COLORS.text} />
+          <Ionicons name="pricetag-outline" size={16} color={COLORS.dark} />
           Category
         </Text>
 

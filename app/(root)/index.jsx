@@ -196,7 +196,7 @@ export default function Page() {
           onPressIn={handleAddPressIn}
           onPressOut={handleAddPressOut}
           style={{
-            backgroundColor: "#5B8CFF",
+            backgroundColor: "#50349dff",
             borderRadius: 50,
             width: 60,
             height: 60,
