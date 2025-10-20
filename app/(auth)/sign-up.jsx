@@ -55,9 +55,14 @@ export default function SignUpScreen() {
         router.replace("/");
       } else {
         console.error(JSON.stringify(signUpAttempt, null, 2));
+        setError("Verification failed. Please try again.");
       }
     } catch (err) {
-      console.error(JSON.stringify(err, null, 2));
+      if (err.errors?.[0]?.code === "form_code_incorrect") {
+        setError("Incorrect verification code. Please check and try again.");
+      } else {
+        setError("Verification failed. Please try again.");
+      }
     }
   };
 

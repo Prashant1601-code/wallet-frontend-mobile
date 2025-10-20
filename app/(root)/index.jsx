@@ -21,6 +21,7 @@ import { TransactionItem } from "../../components/TransactionItem";
 import NoTransactionsFound from "../../components/NoTransactionsFound";
 import { styles } from "../../assets/styles/homes.styles";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useTransactionSync } from "../../hooks/useTransactionSync";
 
 export default function Page() {
   const { user } = useUser();
@@ -37,17 +38,26 @@ export default function Page() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const bounceAnim = useRef(new Animated.Value(1)).current;
 
+  // Use the sync hook for automatic updates
+  useTransactionSync({ loadData });
+
+  // Initial load
   useEffect(() => {
     loadData();
   }, [loadData]);
 
   useEffect(() => {
+    // Sort transactions by date, newest first
+    const sortedTransactions = [...transactions].sort((a, b) => {
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+
     if (!filterDate) {
-      setFilteredTransactions(transactions);
+      setFilteredTransactions(sortedTransactions);
       return;
     }
     const selectedDay = new Date(filterDate).toDateString();
-    const filtered = transactions.filter((t) => {
+    const filtered = sortedTransactions.filter((t) => {
       const tDate = new Date(t.created_at).toDateString();
       return tDate === selectedDay;
     });

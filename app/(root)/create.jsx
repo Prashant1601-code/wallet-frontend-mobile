@@ -65,7 +65,8 @@ const CreateScreen = () => {
         throw new Error(errorData.error || "Failed to create transaction");
       }
       Alert.alert("Success", "Transaction created successfully");
-      router.back();
+      // Use replace instead of back to force a fresh load of the index screen
+      router.replace("/");
     } catch (error) {
       Alert.alert("Error", error.message || "failed to create transaction");
       console.error("Error creating transaction:", error);
